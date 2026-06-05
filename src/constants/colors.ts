@@ -7,4 +7,5 @@ export const Colors = {
 	border: "#EAE5DA",
 	green: "#C9CBA3",
 	red: "#E26D5C",
+	yellow: "#FFE1A8",
 } as const;

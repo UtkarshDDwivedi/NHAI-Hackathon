@@ -5,6 +5,7 @@ import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import { Ionicons } from "@expo/vector-icons";
+import { router } from "expo-router";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -35,7 +36,7 @@ export default function Index() {
 					</Pressable>
 				</View>
 
-				<Pressable style={styles.verifyCard}>
+				<Pressable style={styles.verifyCard} onPress={() => router.push("/verify")}>
 					<Ionicons name="camera" color="#fff" size={140} />
 					<View style={styles.verifyTextContainer}>
 						<Text style={styles.verifyTitle}>Verify Personnel</Text>
@@ -43,7 +44,7 @@ export default function Index() {
 				</Pressable>
 
 				<View style={styles.bottomRow}>
-					<Pressable style={styles.bottomCard}>
+					<Pressable style={styles.bottomCard} onPress={() => router.push("/register")}>
 						<Ionicons
 							size={60}
 							color={Colors.textSecondary}
@@ -51,7 +52,7 @@ export default function Index() {
 						/>
 						<Text style={styles.bottomRowTitle}>Register</Text>
 					</Pressable>
-					<Pressable style={styles.bottomCard}>
+					<Pressable style={styles.bottomCard} onPress={() => router.push("/history")}>
 						<Ionicons
 							size={60}
 							color={Colors.textSecondary}
