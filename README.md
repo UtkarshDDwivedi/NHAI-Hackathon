@@ -1,56 +1,68 @@
-# Welcome to your Expo app 👋
+# Drishti - NHAI Hackathon 🚀
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Drishti is an offline-first, on-device facial recognition and personnel management application built with Expo and React Native. It was developed as a solution for the NHAI Hackathon, enabling seamless and secure verification of personnel even without an active internet connection.
 
-## Get started
+## ✨ Features
 
-1. Install dependencies
+- **Offline Mode**: Operates entirely offline. Records and logs are stored locally on the device and can be synced manually when connectivity is restored.
+- **On-Device Facial Recognition**: Utilizes on-device AI models (`BlazeFace` for face detection and `MobileFaceNet` for face embeddings) via TensorFlow Lite to securely and quickly authenticate personnel without relying on cloud APIs.
+- **Personnel Registration**: Add new personnel directly from the app, capturing their face data locally.
+- **Verification Logs & History**: Keeps a detailed history of all authentication attempts (successes and rejections) with confidence scores.
 
-   ```bash
-   npm install
-   ```
+## 🛠️ Tech Stack
 
-2. Start the app
+- **Framework**: [React Native](https://reactnative.dev/) & [Expo](https://expo.dev/)
+- **Camera**: [`react-native-vision-camera`](https://react-native-vision-camera.com/)
+- **Machine Learning**: [`react-native-fast-tflite`](https://github.com/mrousavy/react-native-fast-tflite) (TensorFlow Lite)
+- **Local Storage**: `react-native-mmkv`
+- **Routing**: Expo Router (File-based routing)
 
-   ```bash
-   npx expo start
-   ```
+## 🚀 Getting Started
 
-In the output, you'll find options to open the app in a
+### Prerequisites
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+Since this project uses native modules (`react-native-vision-camera` and `react-native-fast-tflite`) that are not included in the standard Expo Go app, you will need to create a **Development Build** or compile the app locally using Android Studio / Xcode.
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+### 1. Install Dependencies
 
 ```bash
-npm run reset-project
+npm install
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+### 2. Start the Application
 
-### Other setup steps
+You can start the Expo development server by running:
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+```bash
+npx expo start
+```
 
-## Learn more
+### 3. Run on a Device
 
-To learn more about developing your project with Expo, look at the following resources:
+To run the app on your device, use the following commands to build the native app:
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+- **For Android:**
+  ```bash
+  npm run android
+  ```
+- **For iOS:**
+  ```bash
+  npm run ios
+  ```
 
-## Join the community
+*(Note: iOS requires a Mac with Xcode installed. Running facial recognition models works best on a physical device rather than an emulator.)*
 
-Join our community of developers creating universal apps.
+## 📁 Project Structure
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+- `src/app/` - Contains the screens and file-based routing logic (Expo Router).
+  - `(tabs)/index.tsx` - Main dashboard.
+  - `(tabs)/verify.tsx` - Real-time facial recognition and verification screen.
+  - `(tabs)/register.tsx` - Screen for registering new personnel.
+  - `(tabs)/history.tsx` - History and logs.
+- `src/utils/` - Utility functions for face detection (BlazeFace), embeddings extraction, and similarity scoring.
+- `src/storage/` - Local MMKV storage management for embeddings and logs.
+- `assets/models/` - Contains the `.tflite` AI models used for on-device inference.
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
