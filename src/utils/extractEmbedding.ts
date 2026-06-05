@@ -120,12 +120,12 @@ export async function extractEmbedding(
 		decoded.height *
 		snapshot.height;
 
-	const cropX = Math.max(0, x - w / 2);
-	const cropY = Math.max(0, y - h / 2);
-	const cropW = Math.min(snapshot.width - cropX, w);
-	const cropH = Math.min(snapshot.height - cropY, h);
-
-	const crop = snapshot.crop(cropX, cropY, cropW, cropH);
+	const crop = snapshot.crop(
+		Math.max(0, x - w / 2),
+		Math.max(0, y - h / 2),
+		Math.min(snapshot.width, x + w / 2),
+		Math.min(snapshot.height, y + h / 2)
+	);
 
 	const face =
 		crop.resize(
