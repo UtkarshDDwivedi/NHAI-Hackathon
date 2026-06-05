@@ -35,18 +35,14 @@ export async function extractEmbedding(
 		i < pixels.length;
 		i += 4
 	) {
-		const b = pixels[i];
+		// toRawPixelData returns RGBA. We need to feed RGB to MobileFaceNet.
+		const r = pixels[i];
 		const g = pixels[i + 1];
-		const r = pixels[i + 2];
+		const b = pixels[i + 2];
 
-		input[j++] =
-			(r - 127.5) / 127.5;
-
-		input[j++] =
-			(g - 127.5) / 127.5;
-
-		input[j++] =
-			(b - 127.5) / 127.5;
+		input[j++] = (r - 127.5) / 127.5;
+		input[j++] = (g - 127.5) / 127.5;
+		input[j++] = (b - 127.5) / 127.5;
 	}
 
 	const outputs =
@@ -120,11 +116,15 @@ export async function extractEmbedding(
 		decoded.height *
 		snapshot.height;
 
+	// Force a square crop with 20% padding to prevent the face from getting squished during resize
+	const size = Math.max(w, h) * 1.2;
+	const halfSize = size / 2;
+
 	const crop = snapshot.crop(
-		Math.max(0, x - w / 2),
-		Math.max(0, y - h / 2),
-		Math.min(snapshot.width, x + w / 2),
-		Math.min(snapshot.height, y + h / 2)
+		Math.max(0, x - halfSize),
+		Math.max(0, y - halfSize),
+		Math.min(snapshot.width, x + halfSize),
+		Math.min(snapshot.height, y + halfSize)
 	);
 
 	const face =

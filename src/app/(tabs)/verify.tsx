@@ -18,6 +18,7 @@ import { generateBlazeFaceAnchors } from "@/utils/blazeface";
 import { decodeBox } from "@/utils/decode";
 import { extractEmbedding } from "@/utils/extractEmbedding";
 import { loadAllEmbeddings } from "@/storage/embeddings";
+import { saveLog } from "@/storage/history";
 import { bestMatch } from "@/utils/similarity";
 
 export default function Verify() {
@@ -193,12 +194,28 @@ export default function Verify() {
 					personId: match.personId,
 					score: match.score,
 				});
+				saveLog({
+					timestamp: new Date().toISOString(),
+					status: "success",
+					personId: match.personId,
+					personName: match.personName,
+					score: match.score,
+				});
 			} else {
 				setResult({ status: "rejected", score: match.score });
+				saveLog({
+					timestamp: new Date().toISOString(),
+					status: "rejected",
+					score: match.score,
+				});
 			}
 		} catch (error) {
 			console.error("Verification Error:", error);
 			setResult({ status: "rejected" });
+			saveLog({
+				timestamp: new Date().toISOString(),
+				status: "rejected",
+			});
 		} finally {
 			setIsVerifying(false);
 		}
