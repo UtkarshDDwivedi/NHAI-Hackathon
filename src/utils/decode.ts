@@ -18,8 +18,8 @@ export function decodeBox(
 	const height = h / inputSize;
 
 	return {
-		x: centerX,
-		y: centerY,
+		x: Math.max(0, Math.min(1, centerX)),
+		y: Math.max(0, Math.min(1, centerY)),
 		width,
 		height,
 	};
