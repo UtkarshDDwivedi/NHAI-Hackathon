@@ -59,7 +59,6 @@ export default function History() {
           <View style={styles.detailsRow}>
             <View>
               <Text style={styles.personName}>{item.personName}</Text>
-              <Text style={styles.personId}>ID: {item.personId}</Text>
             </View>
             {item.score !== undefined && (
               <View style={styles.scoreBadge}>
@@ -69,7 +68,7 @@ export default function History() {
           </View>
         ) : (
           <View style={styles.detailsRow}>
-            <Text style={styles.personId}>Unknown Person</Text>
+            <Text style={styles.personName}>Unknown Person</Text>
             {item.score !== undefined && (
               <View style={[styles.scoreBadge, { backgroundColor: 'rgba(255,0,0,0.1)' }]}>
                 <Text style={[styles.scoreText, { color: Colors.red }]}>{(item.score * 100).toFixed(1)}% Match</Text>

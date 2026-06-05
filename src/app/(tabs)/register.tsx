@@ -40,28 +40,48 @@ export default function Register() {
 	const anchors = useMemo(() => generateBlazeFaceAnchors(), []);
 
 	const [personName, setPersonName] = useState("");
-	const [personId, setPersonId] = useState("");
 	const [isRegistering, setIsRegistering] = useState(false);
+
+	const [modelError, setModelError] = useState<string | null>(null);
 
 	useEffect(() => {
 		async function loadModels() {
 			try {
+				const { Asset } = require("expo-asset");
+				
+				const blazeAsset = Asset.fromModule(require("../../../assets/models/blazeface.tflite"));
+				await blazeAsset.downloadAsync();
+				const blazeUri = blazeAsset.localUri || blazeAsset.uri;
+
+				const encoderAsset = Asset.fromModule(require("../../../assets/models/mobilefacenet_encoder.tflite"));
+				await encoderAsset.downloadAsync();
+				const encoderUri = encoderAsset.localUri || encoderAsset.uri;
+
 				const blaze = await loadTensorflowModel(
-					require("../../../assets/models/blazeface.tflite"),
+					{ url: blazeUri },
 					[],
 				);
 				const encoder = await loadTensorflowModel(
-					require("../../../assets/models/mobilefacenet_encoder.tflite"),
+					{ url: encoderUri },
 					[],
 				);
 				setBlazeFace(blaze);
 				setMobileFaceNet(encoder);
-			} catch (error) {
+			} catch (error: any) {
 				console.error(error);
+				setModelError(error?.message || String(error));
 			}
 		}
 		loadModels();
 	}, []);
+
+	if (modelError) {
+		return (
+			<SafeAreaView style={styles.center}>
+				<Text style={{color: 'red', margin: 20, textAlign: 'center'}}>Failed to load AI models: {modelError}</Text>
+			</SafeAreaView>
+		);
+	}
 
 	if (!blazeFace || !mobileFaceNet) {
 		return (
@@ -92,8 +112,8 @@ export default function Register() {
 	}
 
 	const handleRegister = async () => {
-		if (!personName.trim() || !personId.trim()) {
-			Alert.alert("Error", "Please enter both name and ID.");
+		if (!personName.trim()) {
+			Alert.alert("Error", "Please enter the personnel name.");
 			return;
 		}
 
@@ -108,7 +128,8 @@ export default function Register() {
 				anchors
 			);
 			
-			saveEmbedding(personId.trim(), personName.trim(), embedding);
+			const generatedId = Date.now().toString() + Math.random().toString(36).substring(2, 9);
+			saveEmbedding(generatedId, personName.trim(), embedding);
 			Alert.alert("Success", "Personnel registered successfully!", [
 				{ text: "OK", onPress: () => router.push("/") }
 			]);
@@ -143,13 +164,6 @@ export default function Register() {
 					placeholderTextColor={Colors.textSecondary}
 					value={personName}
 					onChangeText={setPersonName}
-				/>
-				<TextInput
-					style={styles.input}
-					placeholder="Personnel ID"
-					placeholderTextColor={Colors.textSecondary}
-					value={personId}
-					onChangeText={setPersonId}
 				/>
 
 				<Pressable 

@@ -119,25 +119,46 @@ export default function Verify() {
 		};
 	}, [device, blazeFace, anchors, isVerifying, isFocused]);
 
+	const [modelError, setModelError] = useState<string | null>(null);
+
 	useEffect(() => {
 		async function loadModels() {
 			try {
+				const { Asset } = require("expo-asset");
+				
+				const blazeAsset = Asset.fromModule(require("../../../assets/models/blazeface.tflite"));
+				await blazeAsset.downloadAsync();
+				const blazeUri = blazeAsset.localUri || blazeAsset.uri;
+
+				const encoderAsset = Asset.fromModule(require("../../../assets/models/mobilefacenet_encoder.tflite"));
+				await encoderAsset.downloadAsync();
+				const encoderUri = encoderAsset.localUri || encoderAsset.uri;
+
 				const blaze = await loadTensorflowModel(
-					require("../../../assets/models/blazeface.tflite"),
+					{ url: blazeUri },
 					[],
 				);
 				const encoder = await loadTensorflowModel(
-					require("../../../assets/models/mobilefacenet_encoder.tflite"),
+					{ url: encoderUri },
 					[],
 				);
 				setBlazeFace(blaze);
 				setMobileFaceNet(encoder);
-			} catch (error) {
+			} catch (error: any) {
 				console.error(error);
+				setModelError(error?.message || String(error));
 			}
 		}
 		loadModels();
 	}, []);
+
+	if (modelError) {
+		return (
+			<SafeAreaView style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+				<Text style={{color: 'red', margin: 20, textAlign: 'center'}}>Failed to load AI models: {modelError}</Text>
+			</SafeAreaView>
+		);
+	}
 
 	if (!blazeFace || !mobileFaceNet) {
 		return (
@@ -268,7 +289,6 @@ export default function Verify() {
 						<>
 							<Text style={styles.resultTitle}>✅ Authenticated</Text>
 							<Text style={styles.resultText}>Name: {result.personName}</Text>
-							<Text style={styles.resultText}>ID: {result.personId}</Text>
 							<Text style={styles.resultScore}>Confidence: {(result.score! * 100).toFixed(1)}%</Text>
 						</>
 					) : (
